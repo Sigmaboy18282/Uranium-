@@ -3,9 +3,9 @@ self.__uv$config = {
     bare: 'https://uv.holyublock.com/', 
     encodeUrl: Ultraviolet.codec.base64.encode,
     decodeUrl: Ultraviolet.codec.base64.decode,
-    handler: '/Uranium-/uv/uv.handler.js',
-    client: '/Uranium-/uv/uv.client.js',
-    bundle: '/Uranium-/uv/uv.bundle.js',
+    handler: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.handler.js',
+    client: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.client.js',
+    bundle: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.bundle.js',
     config: '/Uranium-/uv/uv.config.js',
-    sw: '/Uranium-/uv/uv.sw.js',
+    sw: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.sw.js',
 };
