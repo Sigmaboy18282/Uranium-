@@ -1,21 +1,56 @@
-const form = document.getElementById('proxy-form');
-const input = document.getElementById('url-input');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IXL | Dashboard</title>
+    <style>
+        body { background: #0f0f0f; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { text-align: center; background: #1a1a1a; padding: 40px; border-radius: 15px; border: 1px solid #333; }
+        input { padding: 15px; width: 300px; border-radius: 8px; border: 1px solid #444; background: #000; color: white; outline: none; }
+        button { padding: 15px 25px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 8px; margin-top: 15px; font-weight: bold; }
+        h1 { margin-bottom: 20px; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URANIUM_V3</h1>
+        <form id="proxy-form">
+            <input type="text" id="url-input" placeholder="Search or type URL..." autocomplete="off">
+            <br>
+            <button type="submit">Launch Proxy</button>
+        </form>
+    </div>
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Register the worker using the Repo Name path
-    await navigator.serviceWorker.register('/Uranium-/sw.js', {
-        scope: '/Uranium-/service/'
-    });
+    <script src="https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.bundle.js"></script>
+    <script src="/Uranium-/uv/uv.config.js"></script>
 
-    let url = input.value.trim();
-    if (!url.includes('.') || url.includes(' ')) {
-        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
-    } else if (!url.startsWith('http')) {
-        url = 'https://' + url;
-    }
+    <script>
+        const form = document.getElementById('proxy-form');
+        const input = document.getElementById('url-input');
 
-    // Redirect to the service path
-    window.location.href = '/Uranium-/service/' + btoa(url);
-});
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                // Register the Service Worker for the Uranium- repo
+                await navigator.serviceWorker.register('/Uranium-/sw.js', {
+                    scope: '/Uranium-/service/'
+                });
+
+                let url = input.value.trim();
+                if (!url.includes('.') || url.includes(' ')) {
+                    url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+                } else if (!url.startsWith('http')) {
+                    url = 'https://' + url;
+                }
+
+                // Redirect using the config's encoding method
+                window.location.href = '/Uranium-/service/' + btoa(url);
+            } catch (err) {
+                alert("Engine error: " + err.message);
+            }
+        });
+    </script>
+</body>
+</html>
