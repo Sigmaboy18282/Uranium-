@@ -24,7 +24,6 @@
             overflow: hidden;
         }
 
-        /* Subtle Background Glow */
         body::before {
             content: "";
             position: absolute;
@@ -93,7 +92,6 @@
         button:hover { 
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
-            filter: brightness(1.1);
         }
 
         #status {
@@ -114,7 +112,7 @@
             <br>
             <button type="submit">Launch Proxy</button>
         </form>
-        <div id="status">Engine Offline</div>
+        <div id="status">Engine Ready</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.bundle.js"></script>
@@ -124,6 +122,24 @@
         const form = document.getElementById('proxy-form');
         const input = document.getElementById('url-input');
         const status = document.getElementById('status');
+
+        // AUTO-RECOVERY: If we are on a service path, force the engine to wake up
+        window.addEventListener('load', async () => {
+            if (location.pathname.includes('/service/')) {
+                status.textContent = "Resuming Session...";
+                try {
+                    await navigator.serviceWorker.register('/Uranium-/sw.js', {
+                        scope: '/Uranium-/service/'
+                    });
+                    // If the page is still showing our UI instead of the site, reload once
+                    if (document.querySelector('h1').innerText === "URANIUM_V3") {
+                        location.reload();
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -137,15 +153,13 @@
             }
 
             try {
-                // Register the worker for the subfolder
+                // Register the worker
                 await navigator.serviceWorker.register('/Uranium-/sw.js', {
                     scope: '/Uranium-/service/'
                 });
 
                 status.textContent = "Redirecting...";
-                
-                // Construct the final unblocked URL
-                // Using the specific repo path to ensure it hits the 404 handler
+                // Use Base64 encoding for the URL
                 window.location.href = "/Uranium-/service/" + btoa(url);
                 
             } catch (err) {
