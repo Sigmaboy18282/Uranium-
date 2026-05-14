@@ -1,64 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IXL | Dashboard</title>
-    <style>
-        body { background: #0f0f0f; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .container { text-align: center; }
-        input { padding: 15px; width: 300px; border-radius: 8px; border: 1px solid #333; background: #1a1a1a; color: white; outline: none; }
-        button { padding: 15px 25px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 8px; margin-top: 15px; font-weight: bold; }
-        #status { margin-top: 20px; color: #888; font-size: 14px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>URANIUM_V3</h1>
-        <form id="proxy-form">
-            <input type="text" id="url-input" placeholder="Enter URL or Search..." autocomplete="off">
-            <br>
-            <button type="submit" id="go-btn">Launch Proxy</button>
-        </form>
-        <div id="status"></div>
-    </div>
+const form = document.getElementById('proxy-form');
+const input = document.getElementById('url-input');
 
-    <script src="https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@3.2.10/dist/uv.bundle.js"></script>
-    <script src="/uv/uv.config.js"></script>
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Register the worker using the Repo Name path
+    await navigator.serviceWorker.register('/Uranium-/sw.js', {
+        scope: '/Uranium-/service/'
+    });
 
-    <script>
-        const form = document.getElementById('proxy-form');
-        const input = document.getElementById('url-input');
-        const status = document.getElementById('status');
+    let url = input.value.trim();
+    if (!url.includes('.') || url.includes(' ')) {
+        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+    } else if (!url.startsWith('http')) {
+        url = 'https://' + url;
+    }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            status.textContent = "Launching engine... please wait.";
-            
-            try {
-                // Register the Service Worker
-                await navigator.serviceWorker.register('./sw.js', {
-                    scope: '/service/'
-                });
-
-                let url = input.value.trim();
-                if (!url.includes('.') || url.includes(' ')) {
-                    url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
-                } else if (!url.startsWith('http')) {
-                    url = 'https://' + url;
-                }
-
-                // Encode the URL using Ultraviolet's built-in encoder
-                // If this fails, the proxy will stay on the same page
-                const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
-                
-                status.textContent = "Redirecting...";
-                window.location.href = encodedUrl;
-            } catch (err) {
-                status.textContent = "Error: " + err.message;
-                console.error(err);
-            }
-        });
-    </script>
-</body>
-</html>
+    // Redirect to the service path
+    window.location.href = '/Uranium-/service/' + btoa(url);
+});
