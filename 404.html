@@ -108,7 +108,7 @@
     <div class="container">
         <h1>URANIUM_V3</h1>
         <form id="proxy-form">
-            <input type="text" id="url-input" placeholder="SEARCH OR TYPE URL" autocomplete="off">
+            <input type="text" id="url-input" placeholder="SEARCH DUCKDUCKGO OR TYPE URL" autocomplete="off">
             <br>
             <button type="submit">Launch Proxy</button>
         </form>
@@ -123,7 +123,7 @@
         const input = document.getElementById('url-input');
         const status = document.getElementById('status');
 
-        // AUTO-RECOVERY: If we are on a service path, force the engine to wake up
+        // AUTO-RECOVERY: Kicks in if GitHub redirects to 404
         window.addEventListener('load', async () => {
             if (location.pathname.includes('/service/')) {
                 status.textContent = "Resuming Session...";
@@ -131,7 +131,7 @@
                     await navigator.serviceWorker.register('/Uranium-/sw.js', {
                         scope: '/Uranium-/service/'
                     });
-                    // If the page is still showing our UI instead of the site, reload once
+                    // Refresh if the UI is still visible but a service URL is in the bar
                     if (document.querySelector('h1').innerText === "URANIUM_V3") {
                         location.reload();
                     }
@@ -146,20 +146,20 @@
             status.textContent = "Booting Engine...";
 
             let url = input.value.trim();
+            // DuckDuckGo Search Logic
             if (!url.includes('.') || url.includes(' ')) {
-                url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+                url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
             } else if (!url.startsWith('http')) {
                 url = 'https://' + url;
             }
 
             try {
-                // Register the worker
                 await navigator.serviceWorker.register('/Uranium-/sw.js', {
                     scope: '/Uranium-/service/'
                 });
 
                 status.textContent = "Redirecting...";
-                // Use Base64 encoding for the URL
+                // Redirecting to the Uranium service path
                 window.location.href = "/Uranium-/service/" + btoa(url);
                 
             } catch (err) {
